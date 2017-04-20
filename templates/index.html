@@ -1,0 +1,46 @@
+<html>
+  <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Profiling PHP code with xdebug</title>
+  </head>
+<body>
+<style>
+  button {
+  	margin: 0px 0px 10px 0px;
+    display: block;
+    cursor: pointer;
+    font-size: 100%;
+}
+</style>
+<h2>Profiling PHP code with xdebug</h2>
+<div id="button_generate"></div>
+<center><h3 id="header-name"></h3></center>
+<div id="graphviz_svg_div"></div>
+</body>
+<script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script language="javascript" type="text/javascript" src="./templates/viz.js"></script>
+<script language="javascript" type="text/javascript" >
+var svg_div = jQuery('#graphviz_svg_div');
+function InsertGraphvizText(text) {
+    graphviz_data_textarea.val(text);
+}
+function UpdateGraphviz(scz) {
+
+    $("#header-name").text("Profiling: "+$('[data-name = "'+scz+'"]').attr("data-name"));
+    svg_div.html("");
+    var data = $('[data-name = "'+scz+'"]').text().trim();
+    var svg = Viz(data, "svg");
+    svg_div.html("<hr>"+svg);
+}
+jQuery(document).ready(function () {
+  ($(".data-dot").length!=0)?UpdateGraphviz($(".data-dot:first").attr("data-name")):$("#header-name").text("No data");
+  $('#button_generate').on('click', '.grafgenerate', function() {
+    UpdateGraphviz($(this).text());
+  });
+  $(".data-dot").each(function( index ) { 
+    $( "#button_generate" ).append("<button class=\"grafgenerate\">"+$( this ).attr("data-name")+"</button>");
+  });
+});
+</script>
+%%script_graf_data%%
+</html>

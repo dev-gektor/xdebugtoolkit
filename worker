@@ -1,0 +1,65 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+import os
+import fnmatch
+import sys
+from cgparser import XdebugCachegrindFsaParser, CgParseError
+from reader import CallTree, CallTreeAggregator, XdebugCachegrindTreeBuilder
+from dotm import DotBuilderm
+from stylers.default import DotNodeStyler
+
+
+
+
+directory = '/home/sergektor/PROEKT/AMAZON/profil-dev-server/test/'
+
+
+
+# def getsubs(dir):
+#     dirs = []
+#     files = []
+#     for dirname, dirnames, filenames in os.walk(dir):
+#         #dirs.append(dirname)
+#         #for subdirname in dirnames:
+#         #    dirs.append(os.path.join(dirname, subdirname))
+#         for filename in filenames:
+#         	if fnmatch.fnmatch(filename, "cachegrind.out.*"):
+#             	#files.append(os.path.join(dirname, filename))
+#             print filename
+#     # return dirs, files
+#     return files
+
+# print getsubs('/home/sergektor/PROEKT/AMAZON/profil-dev-server/test/')
+# getsubs('/home/sergektor/PROEKT/AMAZON/profil-dev-server/test/')
+
+
+def getsubs(dir):
+	strout = ''
+	for file in os.listdir(dir):
+	    if fnmatch.fnmatch(file, 'cachegrind.out.*'):
+			file = os.path.join(dir, file)
+			print ('Load: {}'.format(file))
+			merged_tree = CallTree()
+			tree_aggregator = CallTreeAggregator()
+			xdebug_parser = XdebugCachegrindFsaParser(file)
+			tree = XdebugCachegrindTreeBuilder(xdebug_parser).get_tree()
+			merged_tree.merge(tree)
+			merged_tree = tree_aggregator.aggregate_call_paths(merged_tree)
+			merged_tree.filter_inclusive_time(1)
+			strout = strout + '<script type="bogus" class="data-dot" data-name="{0}">{1}</script>\n'.format(os.path.basename(file), DotBuilderm().get_dot(merged_tree, DotNodeStyler,os.path.basename(file)))
+			print ('Save: {0}.DOT'.format(os.path.basename(file)))
+
+
+
+	lines = []
+	with open('./templates/index.html') as infile:
+		for line in infile:
+			line = line.replace('%%script_graf_data%%', strout)
+			lines.append(line)
+	with open('index-out.html', 'w') as outfile:
+		for line in lines:
+			outfile.write(line)
+
+
+
+getsubs(directory)
