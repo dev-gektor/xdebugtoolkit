@@ -1,5 +1,5 @@
 #!/bin/bash
-FILE=/etc/php7/mods-available/xdebug.ini
+FILE=/etc/php/7.0/mods-available/xdebug.ini
 
 confirm() {
 
@@ -8,9 +8,9 @@ confirm() {
 	if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]
 	then
 	  echo "Yes"
-	  apt-get install php7-xdebug
+	  apt-get install php-xdebug
 	  echo "zend_extension=xdebug.so" > $FILE
-	  php7enmod xdebug
+	  phpenmod xdebug
 	  service apache2 restart
 	else
 	  echo "error"

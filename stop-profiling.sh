@@ -3,7 +3,7 @@
 OUTPROFAILERDIR=/tmp/profiler
 OUTPROFAILERFILE=/var/www/html/profiler.html
 
-php7dismod xdebug
+phpdismod xdebug
 service apache2 restart
 
 python worker $OUTPROFAILERFILE $OUTPROFAILERDIR

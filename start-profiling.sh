@@ -2,7 +2,7 @@
 
 OUTPROFAILERDIR=/tmp/profiler
 PATTERN='xdebug.profiler_enable'
-FILE=/etc/php7/mods-available/xdebug.ini
+FILE=/etc/php/7.0/mods-available/xdebug.ini
 
 
 if [ ! -d "$OUTPROFAILERDIR" ]; then
@@ -24,5 +24,5 @@ fi
 
 find $OUTPROFAILERDIR -type f -exec rm {} \;
 
-php7enmod xdebug
+phpenmod xdebug
 service apache2 restart
